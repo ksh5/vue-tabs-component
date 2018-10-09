@@ -26,8 +26,6 @@
 </template>
 
 <script>
-    import expiringStorage from '../expiringStorage';
-
     export default {
         props: {
             cacheLifetime: {
@@ -50,12 +48,6 @@
             lastActiveTabHash: '',
         }),
 
-        computed: {
-            storageKey() {
-                return `vue-tabs-component.cache.${window.location.host}${window.location.pathname}`;
-            },
-        },
-
         created() {
             this.tabs = this.$children;
         },
@@ -65,13 +57,6 @@
 
             if (this.findTab(window.location.hash)) {
                 this.selectTab(window.location.hash);
-                return;
-            }
-
-            const previousSelectedTabHash = expiringStorage.get(this.storageKey);
-
-            if (this.findTab(previousSelectedTabHash)) {
-                this.selectTab(previousSelectedTabHash);
                 return;
             }
 
@@ -123,7 +108,6 @@
 
                 this.lastActiveTabHash = this.activeTabHash = selectedTab.hash;
 
-                expiringStorage.set(this.storageKey, selectedTab.hash, this.cacheLifetime);
             },
 
             setTabVisible(hash, visible) {
